@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,4 +45,14 @@ public class LectureFacade {
     }
 
 
+    public List<LectureResult> applicableLectures(LectureParam lectureParam) {
+        //1. 날짜 validation 체크
+        String date = lectureParam.getDate();
+        lectureService.validDate(date);
+        //2. 날짜가 입력받은 날짜이고 특강의 isAvailable이 'Y'인 것만 조회
+        List<Lecture> applicableLectures =  lectureService.applicableLectures(date);
+        return applicableLectures.stream()
+                .map(LectureResult :: toServiceDto)
+                .collect(Collectors.toList());
+    }
 }
