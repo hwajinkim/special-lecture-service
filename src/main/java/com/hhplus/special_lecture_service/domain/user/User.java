@@ -3,9 +3,7 @@ package com.hhplus.special_lecture_service.domain.user;
 import com.hhplus.special_lecture_service.domain.common.BaseEntity;
 import com.hhplus.special_lecture_service.domain.registration.Registration;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -26,4 +24,26 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Registration> registrationList;
+
+    public User(long userId){
+        if(!isValidId(userId)){
+            throw new IllegalArgumentException("사용자 ID 유효하지 않음.");
+        }
+        this.id = userId;
+    }
+
+    public User(long userId, String username) {
+        this.id = userId;
+        this.username = username;
+    }
+
+    @Builder
+    public User(Long id, String username, List<Registration> registrationList){
+        this.id = id;
+        this.username = username;
+        this.registrationList = registrationList;
+    }
+    public static boolean isValidId(Long id){
+        return id != null &&  id > 0;
+    }
 }
