@@ -1,5 +1,6 @@
 package com.hhplus.special_lecture_service.domain.lecture;
 
+import com.hhplus.special_lecture_service.common.exception.InvalidDateException;
 import com.hhplus.special_lecture_service.common.exception.LectureNotFoundException;
 import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
 import com.hhplus.special_lecture_service.domain.common.BaseEntity;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -68,6 +70,20 @@ public class Lecture extends BaseEntity {
 
     public static boolean isValidId(Long id){
         return id != null &&  id > 0;
+    }
+
+    public static String validDate(String date) {
+        if(date == null || date.isEmpty()){
+            throw new InvalidDateException("날짜 형식이 유효하지 않음.");
+        }
+        try{
+            SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormatParser.setLenient(false);
+            dateFormatParser.parse(date);
+        }catch(Exception e){
+            throw new InvalidDateException("날짜 형식이 유효하지 않음.");
+        }
+        return date;
     }
 
     public void update(Long lectureId, int completedCount) {

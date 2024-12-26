@@ -1,5 +1,6 @@
 package com.hhplus.special_lecture_service.unitTest.model;
 
+import com.hhplus.special_lecture_service.common.exception.InvalidDateException;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,5 +50,27 @@ public class LectureTest {
         Lecture lecture = new Lecture(lectureId);
         //then
         assertThat(lecture.getId()).isEqualTo(lectureId);
+    }
+
+    @Test
+    @DisplayName("특강 날짜 유효성 테스트 - 실패")
+    void testValidLectureDate_fail(){
+        //given
+        String date = "2024/12/25";
+        //when & then
+        assertThatThrownBy(()-> Lecture.validDate(date))
+                .isInstanceOf(InvalidDateException.class)
+                .hasMessage("날짜 형식이 유효하지 않음.");
+    }
+
+    @Test
+    @DisplayName("특강 날짜 유효성 테스트 - 성공")
+    void testValidLectureDate_success(){
+        //given
+        String date = "2024-12-25";
+        //when
+        String getDate = Lecture.validDate(date);
+        //then
+        assertThat(getDate).isEqualTo(date);
     }
 }
