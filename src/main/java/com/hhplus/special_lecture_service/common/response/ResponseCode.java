@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ResponseCode {
 
-    CREATE_SUCCESS(HttpStatus.CREATED, true, "특강 신청에 성공했습니다.");
+    CREATE_SUCCESS(HttpStatus.CREATED, true, "특강 신청에 성공했습니다."),
+    READ_SUCCESS(HttpStatus.OK, true, "특강 신청 가능 목록 조회에 신공했습니다.");
 
     private final HttpStatus httpStatus;
     private final Boolean success;
