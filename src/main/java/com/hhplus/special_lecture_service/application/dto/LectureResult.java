@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -20,29 +22,35 @@ public class LectureResult {
     private Long lectureId;
     private String lectureName;
     private String speaker;
-    private Date date;
-    private Time startTime;
-    private Time endTime;
+    private LocalDate lectureDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private int applicantNumber;
+    private char isAvailable;
 
     public static LectureResult toServiceDto(Lecture lecture){
         return new LectureResult(
                 lecture.getId(),
                 lecture.getLectureName(),
                 lecture.getSpeaker(),
-                lecture.getDate(),
+                lecture.getLectureDate(),
                 lecture.getStartTime(),
-                lecture.getEndTime()
+                lecture.getEndTime(),
+                lecture.getApplicantNumber(),
+                lecture.getIsAvailable()
         );
     }
 
-    public static LectureResponse toContollerDto(LectureResult lectureResult) {
+    public static LectureResponse toControllerDto(LectureResult lectureResult) {
         return new LectureResponse(
                 lectureResult.getLectureId(),
                 lectureResult.getLectureName(),
                 lectureResult.getSpeaker(),
-                lectureResult.getDate(),
+                lectureResult.getLectureDate(),
                 lectureResult.getStartTime(),
-                lectureResult.getEndTime()
+                lectureResult.getEndTime(),
+                lectureResult.getApplicantNumber(),
+                lectureResult.getIsAvailable()
         );
     }
 }

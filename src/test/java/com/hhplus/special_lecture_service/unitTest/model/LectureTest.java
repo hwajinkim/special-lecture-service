@@ -64,6 +64,17 @@ public class LectureTest {
     }
 
     @Test
+    @DisplayName("특강 날짜 유효성 테스트 - Null실패")
+    void testValidLectureDate_failNull(){
+        //given
+        String date = null;
+        //when & then
+        assertThatThrownBy(()-> Lecture.validDate(date))
+                .isInstanceOf(InvalidDateException.class)
+                .hasMessage("날짜 형식이 유효하지 않음.");
+    }
+
+    @Test
     @DisplayName("특강 날짜 유효성 테스트 - 성공")
     void testValidLectureDate_success(){
         //given

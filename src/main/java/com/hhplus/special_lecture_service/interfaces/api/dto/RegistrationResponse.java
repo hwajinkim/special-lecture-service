@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -19,9 +21,9 @@ public class RegistrationResponse {
     private Long lectureId;
     private String lecture_name;
     private String speaker;
-    private Date date;
-    private Time startTime;
-    private Time endTime;
+    private LocalDate lectureDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private StatusType status;
     private Timestamp appliedAt;
 
@@ -31,7 +33,7 @@ public class RegistrationResponse {
                 registrationResult.getLectureId(),
                 registrationResult.getLectureName(),
                 registrationResult.getSpeaker(),
-                registrationResult.getDate(),
+                registrationResult.getLectureDate(),
                 registrationResult.getStartTime(),
                 registrationResult.getEndTime(),
                 registrationResult.getStatus(),

@@ -7,9 +7,14 @@ import com.hhplus.special_lecture_service.domain.common.BaseEntity;
 import com.hhplus.special_lecture_service.domain.registration.Registration;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -32,13 +37,13 @@ public class Lecture extends BaseEntity {
     private String speaker;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDate lectureDate;
 
     @Column(nullable = false)
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private Time endTime;
+    private LocalTime endTime;
 
     @Column
     private int applicantNumber;
@@ -56,11 +61,11 @@ public class Lecture extends BaseEntity {
         this.id = id;
     }
    @Builder
-    public Lecture(Long id, String lectureName, String speaker, Date date, Time startTime, Time endTime, int applicantNumber, char isAvailable, List<Registration> registrationList){
+    public Lecture(Long id, String lectureName, String speaker, LocalDate lectureDate, LocalTime startTime, LocalTime endTime, int applicantNumber, char isAvailable, List<Registration> registrationList){
         this.id = id;
         this.lectureName = lectureName;
         this.speaker = speaker;
-        this.date = date;
+        this.lectureDate = lectureDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.applicantNumber = applicantNumber;
@@ -77,9 +82,7 @@ public class Lecture extends BaseEntity {
             throw new InvalidDateException("날짜 형식이 유효하지 않음.");
         }
         try{
-            SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormatParser.setLenient(false);
-            dateFormatParser.parse(date);
+            LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }catch(Exception e){
             throw new InvalidDateException("날짜 형식이 유효하지 않음.");
         }

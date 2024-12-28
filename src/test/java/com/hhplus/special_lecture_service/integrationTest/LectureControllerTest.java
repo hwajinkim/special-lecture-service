@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,26 +42,10 @@ public class LectureControllerTest extends BaseIntegrationTest{
     @DisplayName("특강 신청 테스트")
     public void lectureApplyTest() throws Exception {
         //given
-        String username = "kimhwajin";
-        User user = userSetUp.saveUser(username);
+        User user = userSetUp.saveUser("kimhwajin");
 
-        String lectureName = "스프링 강좌";
-        String speaker = "홍길동";
-        //특강 날짜
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2024, Calendar.DECEMBER, 25); // 2024-12-25
-        Date specificDate = calendar.getTime();
-        Date date = specificDate;
-        //특강 시작 시간
-        Time sqlStartTime = Time.valueOf("10:00:00");
-        Time startTime = sqlStartTime;
-        //특강 종료 시간
-        Time sqlEndTime = Time.valueOf("12:00:00");
-        Time endTime = sqlEndTime;
-        int applicantNumber = 10;
-        char isAvailable = 'Y';
-
-        Long lectureId = lectureSetUp.saveLecture(lectureName, speaker, date, startTime, endTime,applicantNumber, isAvailable);
+        Long lectureId = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
+                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
 
         RegistrationRequest registrationRequest = new RegistrationRequest();
         registrationRequest.setUserId(user.getId());
@@ -68,7 +53,7 @@ public class LectureControllerTest extends BaseIntegrationTest{
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/lecture/apply")
-                .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registrationRequest))
                         .accept(MediaType.APPLICATION_JSON))
                         .andDo(print());
@@ -87,31 +72,18 @@ public class LectureControllerTest extends BaseIntegrationTest{
     public void getLecturesAvailableTest() throws Exception {
         //given
         String getDate = "2024-12-25";
-        String lectureName = "스프링 강좌";
-        String speaker = "홍길동";
-        //특강 날짜
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2024, Calendar.DECEMBER, 25); // 2024-12-25
-        Date specificDate = calendar.getTime();
-        Date date = specificDate;
-        //특강 시작 시간
-        Time sqlStartTime = Time.valueOf("10:00:00");
-        Time startTime = sqlStartTime;
-        //특강 종료 시간
-        Time sqlEndTime = Time.valueOf("12:00:00");
-        Time endTime = sqlEndTime;
-        int applicantNumber = 10;
-        char isAvailable = 'Y';
 
-        Long lectureId = lectureSetUp.saveLecture(lectureName, speaker, date, startTime, endTime,applicantNumber, isAvailable);
+        Long lectureId = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
+                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
 
         LectureRequest lectureRequest = new LectureRequest();
         lectureRequest.setDate(getDate);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/lectures/available?date="+lectureRequest.getDate())
+        ResultActions resultActions = mvc.perform(get("/api/lectures/available")
+                        .param("date", getDate)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                        .andDo(print());
 
         //then
         resultActions
@@ -119,6 +91,12 @@ public class LectureControllerTest extends BaseIntegrationTest{
                 .andExpect(jsonPath("success", Matchers.is("true")))
                 .andExpect(jsonPath("message", Matchers.is("신청 가능한 특강 조회에 성공했습니다.")))
                 .andExpect(jsonPath("data", Matchers.is(notNullValue())));
+    }
 
+    @Test
+    void testGetAvailableLectures_MissingDate() throws Exception {
+        mvc.perform(get("/api/lectures/available")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

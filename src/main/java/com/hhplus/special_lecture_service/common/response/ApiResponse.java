@@ -1,9 +1,13 @@
 package com.hhplus.special_lecture_service.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hhplus.special_lecture_service.interfaces.api.dto.LectureResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

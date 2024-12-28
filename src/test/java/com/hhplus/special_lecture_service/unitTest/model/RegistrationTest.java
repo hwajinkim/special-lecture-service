@@ -14,7 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +37,9 @@ public class RegistrationTest {
                 .id(1L)
                 .lectureName("운영체제")
                 .speaker("김철수")
-                .date(Date.valueOf("2024-12-25"))
-                .startTime(Time.valueOf("10:00:00"))
-                .endTime(Time.valueOf("12:00:00"))
+                .lectureDate(LocalDate.of(2024,12,25))
+                .startTime(LocalTime.of(10,00,00))
+                .endTime(LocalTime.of(12,00,00))
                 .applicantNumber(20)
                 .registrationList(registrationList)
                 .build();

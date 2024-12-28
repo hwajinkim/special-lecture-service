@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.mockito.Mockito.verify;
@@ -41,9 +43,9 @@ public class LectureServiceTest {
                 .id(1L)
                 .lectureName("운영체제")
                 .speaker("김철수")
-                .date(Date.valueOf("2024-12-25"))
-                .startTime(Time.valueOf("10:00:00"))
-                .endTime(Time.valueOf("12:00:00"))
+                .lectureDate(LocalDate.of(2024, 12, 25))
+                .startTime(LocalTime.of(10,00,00))
+                .endTime(LocalTime.of(12,00,00))
                 .applicantNumber(20)
                 .registrationList(registrationList)
                 .build();
@@ -130,9 +132,9 @@ public class LectureServiceTest {
                         .id(1L)
                         .lectureName("스프링 강좌")
                         .speaker("강민수")
-                        .date(Date.valueOf("2024-12-25"))
-                        .startTime(Time.valueOf("10:00:00"))
-                        .endTime(Time.valueOf("12:00:00"))
+                        .lectureDate(LocalDate.of(2024,12,25))
+                        .startTime(LocalTime.of(10,00,00))
+                        .endTime(LocalTime.of(12,00,00))
                         .applicantNumber(20)
                         .isAvailable('Y')
                         .build(),
@@ -140,9 +142,9 @@ public class LectureServiceTest {
                         .id(2L)
                         .lectureName("운영체제")
                         .speaker("김철수")
-                        .date(Date.valueOf("2024-12-25"))
-                        .startTime(Time.valueOf("15:00:00"))
-                        .endTime(Time.valueOf("17:00:00"))
+                        .lectureDate(LocalDate.of(2024,12,25))
+                        .startTime(LocalTime.of(10,00,00))
+                        .endTime(LocalTime.of(12,00,00))
                         .applicantNumber(20)
                         .isAvailable('Y')
                         .build()

@@ -14,7 +14,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -43,13 +45,13 @@ public class Registration {
     private String speaker;
 
     @Column
-    private Date date;
+    private LocalDate lectureDate;
 
     @Column
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column
-    private Time endTime;
+    private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
     private StatusType status;
@@ -58,13 +60,13 @@ public class Registration {
     private Timestamp appliedAt;
 
     @Builder
-    public Registration(Long id, User user, Lecture lecture, String lectureName, String speaker, Date date, Time startTime, Time endTime, StatusType status){
+    public Registration(Long id, User user, Lecture lecture, String lectureName, String speaker, LocalDate lectureDate, LocalTime startTime, LocalTime endTime, StatusType status){
         this.id = id;
         this.user = user;
         this.lecture = lecture;
         this.lectureName = lectureName;
         this.speaker = speaker;
-        this.date = date;
+        this.lectureDate = lectureDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
@@ -72,7 +74,7 @@ public class Registration {
 
     public static Registration toSaveReturn(User user, Lecture lecture){
         return new Registration(null, user, lecture, lecture.getLectureName(),
-                lecture.getSpeaker(), lecture.getDate(), lecture.getStartTime(), lecture.getEndTime(),
+                lecture.getSpeaker(), lecture.getLectureDate(), lecture.getStartTime(), lecture.getEndTime(),
                 StatusType.COMPLETED);
     }
 

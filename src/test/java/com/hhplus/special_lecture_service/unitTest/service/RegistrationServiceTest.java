@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,9 +53,9 @@ public class RegistrationServiceTest {
                 .id(1L)
                 .lectureName("운영체제")
                 .speaker("김철수")
-                .date(Date.valueOf("2024-12-25"))
-                .startTime(Time.valueOf("10:00:00"))
-                .endTime(Time.valueOf("12:00:00"))
+                .lectureDate(LocalDate.of(2024,12,25))
+                .startTime(LocalTime.of(10,00,00))
+                .endTime(LocalTime.of(12,10,10))
                 .applicantNumber(20)
                 .registrationList(registrationList)
                 .build();
@@ -79,9 +81,9 @@ public class RegistrationServiceTest {
                 .id(1L)
                 .lectureName("운영체제")
                 .speaker("김철수")
-                .date(Date.valueOf("2024-12-25"))
-                .startTime(Time.valueOf("10:00:00"))
-                .endTime(Time.valueOf("12:00:00"))
+                .lectureDate(LocalDate.of(2024,12,25))
+                .startTime(LocalTime.of(10,00,00))
+                .endTime(LocalTime.of(12,00,00))
                 .status(StatusType.COMPLETED)
                 .build();
 
