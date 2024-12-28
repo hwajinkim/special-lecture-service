@@ -1,6 +1,7 @@
 package com.hhplus.special_lecture_service.application.lecture;
 
 import com.hhplus.special_lecture_service.application.dto.*;
+import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLectures;
 import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.lecture.LectureService;
@@ -45,12 +46,14 @@ public class LectureFacade {
     }
 
 
-    public List<LectureResult> applicableLectures(LectureParam lectureParam) {
+    public List<LectureResult> applicableLectures(String date) {
         //1. 날짜 validation 체크
-        String date = lectureParam.getDate();
-        lectureService.validDate(date);
+        String returnDate = lectureService.validDate(date);
         //2. 날짜가 입력받은 날짜이고 특강의 isAvailable이 'Y'인 것만 조회
-        List<Lecture> applicableLectures =  lectureService.applicableLectures(date);
+        List<Lecture> applicableLectures = lectureService.applicableLectures(returnDate);
+        if(applicableLectures == null || applicableLectures.isEmpty()){
+            throw new NotFoundApplicableLectures("신청 가능한 강의가 없습니다.");
+        }
         return applicableLectures.stream()
                 .map(LectureResult :: toServiceDto)
                 .collect(Collectors.toList());

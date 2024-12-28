@@ -33,8 +33,8 @@ public class LectureService {
         lectureRepository.save(lecture);
     }
 
-    public void validDate(String date) {
-        Lecture.validDate(date);
+    public String validDate(String date) {
+        return Lecture.validDate(date);
     }
 
     public List<Lecture> applicableLectures(String date) {

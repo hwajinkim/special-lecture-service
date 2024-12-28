@@ -19,6 +19,7 @@ public class LectureController {
 
     private final LectureFacade lectureFacade;
 
+
     @PostMapping("/lecture/apply")
     public ApiResponse<RegistrationResponse> lectureApply(@RequestBody RegistrationRequest registrationRequest){
 
@@ -30,13 +31,13 @@ public class LectureController {
     }
 
     @GetMapping("/lectures/available")
-    public ApiResponse<List<LectureResponse>> getAvailableLectures(@RequestParam LectureRequest lectureRequest){
+    public ApiResponse<List<LectureResponse>> getAvailableLectures(@RequestParam(required = true) String date){
 
-        LectureParam lectureParam = LectureParam.toServiceDto(lectureRequest);
-        List<LectureResult> lectureResults = lectureFacade.applicableLectures(lectureParam);
+        List<LectureResult> lectureResults = lectureFacade.applicableLectures(date);
+
         List<LectureResponse> lectureResponses = new ArrayList<>();
         for(LectureResult lectureResult : lectureResults){
-            LectureResponse lectureResponse = LectureResult.toContollerDto(lectureResult);
+            LectureResponse lectureResponse = LectureResult.toControllerDto(lectureResult);
             lectureResponses.add(lectureResponse);
         }
         return ApiResponse.success(ResponseCode.READ_SUCCESS.getMessage(), lectureResponses);
