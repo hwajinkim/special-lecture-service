@@ -1,7 +1,7 @@
 package com.hhplus.special_lecture_service.application.lecture;
 
 import com.hhplus.special_lecture_service.application.dto.*;
-import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLectures;
+import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLecturesException;
 import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.lecture.LectureService;
@@ -24,7 +24,7 @@ public class LectureFacade {
     private final LectureService lectureService;
     private final RegistrationService registrationService;
 
-    // 특강 신청하기
+    // 1. 특강 신청하기
     public RegistrationResult lectureRegist(RegistrationParam registrationParam){
 
         long userId = registrationParam.getUserId();
@@ -45,17 +45,28 @@ public class LectureFacade {
         return RegistrationResult.toServiceDto(registration);
     }
 
-
+    // 2. 신청 가능한 특강 날짜로 조회
     public List<LectureResult> applicableLectures(String date) {
         //1. 날짜 validation 체크
         String returnDate = lectureService.validDate(date);
         //2. 날짜가 입력받은 날짜이고 특강의 isAvailable이 'Y'인 것만 조회
         List<Lecture> applicableLectures = lectureService.applicableLectures(returnDate);
         if(applicableLectures == null || applicableLectures.isEmpty()){
-            throw new NotFoundApplicableLectures("신청 가능한 강의가 없습니다.");
+            throw new NotFoundApplicableLecturesException("신청 가능한 강의가 없습니다.");
         }
         return applicableLectures.stream()
                 .map(LectureResult :: toServiceDto)
+                .collect(Collectors.toList());
+    }
+
+    // 3. 신청 완료 목록 조회
+    public List<RegistrationResult> completedRegistration(long userId) {
+        //1. 사용자 ID 유효성 검증
+        User user = userService.validUserId(userId);
+        //2. registration 테이블에 사용자ID가 userId이고, status값이 'COMPLETED'인 데이터 조회
+        List<Registration> registrations = registrationService.completedRegistration(userId);
+        return registrations.stream()
+                .map(RegistrationResult :: toServiceDto)
                 .collect(Collectors.toList());
     }
 }
