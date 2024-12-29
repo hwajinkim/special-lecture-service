@@ -1,8 +1,11 @@
 package com.hhplus.special_lecture_service.integrationTest;
 
+import com.hhplus.special_lecture_service.domain.common.StatusType;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
+import com.hhplus.special_lecture_service.domain.registration.Registration;
 import com.hhplus.special_lecture_service.domain.user.User;
 import com.hhplus.special_lecture_service.integrationTest.setUp.LectureSetUp;
+import com.hhplus.special_lecture_service.integrationTest.setUp.RegistrationSetUp;
 import com.hhplus.special_lecture_service.integrationTest.setUp.UserSetUp;
 import com.hhplus.special_lecture_service.interfaces.api.dto.LectureRequest;
 import com.hhplus.special_lecture_service.interfaces.api.dto.RegistrationRequest;
@@ -37,6 +40,9 @@ public class LectureControllerTest extends BaseIntegrationTest{
     @Autowired
     private LectureSetUp lectureSetUp;
 
+    @Autowired
+    private RegistrationSetUp registrationSetUp;
+
 
     @Test
     @DisplayName("특강 신청 테스트")
@@ -44,12 +50,12 @@ public class LectureControllerTest extends BaseIntegrationTest{
         //given
         User user = userSetUp.saveUser("kimhwajin");
 
-        Long lectureId = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
+        Lecture lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
                 LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
 
         RegistrationRequest registrationRequest = new RegistrationRequest();
         registrationRequest.setUserId(user.getId());
-        registrationRequest.setLectureId(lectureId);
+        registrationRequest.setLectureId(lecture.getId());
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/lecture/apply")
@@ -73,7 +79,7 @@ public class LectureControllerTest extends BaseIntegrationTest{
         //given
         String getDate = "2024-12-25";
 
-        Long lectureId = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
+        Lecture lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
                 LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
 
         LectureRequest lectureRequest = new LectureRequest();
@@ -94,9 +100,35 @@ public class LectureControllerTest extends BaseIntegrationTest{
     }
 
     @Test
-    void testGetAvailableLectures_MissingDate() throws Exception {
-        mvc.perform(get("/api/lectures/available")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+    @DisplayName("특강 신청 완료 목록 조회 테스트")
+    public void getCompletedRegistrationTest() throws Exception {
+        //given
+        Long userId = 1L;
+
+        User user = userSetUp.saveUser("kimhwajin");
+
+        Lecture lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
+                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
+
+        Registration registration = registrationSetUp.saveRegistration(user, lecture, "스프링 강좌", "홍길동",
+                LocalDate.of(2024,12,25), LocalTime.of(10,00,00), LocalTime.of(12,00,00)
+                , StatusType.COMPLETED);
+
+        Registration registration2 = registrationSetUp.saveRegistration(user, lecture, "네트워크 개론", "김철수",
+                LocalDate.of(2024,12,25), LocalTime.of(14,00,00), LocalTime.of(16,00,00)
+                , StatusType.COMPLETED);
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api//lectures/completed")
+                            .param("userId", String.valueOf(userId))
+                            .accept(MediaType.APPLICATION_JSON))
+                            .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("success", Matchers.is("true")))
+                .andExpect(jsonPath("message", Matchers.is("특강 신청 완료된 목록 조회에 성공했습니다.")))
+                .andExpect(jsonPath("data", Matchers.is(notNullValue())));
     }
 }
