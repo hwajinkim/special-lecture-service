@@ -37,16 +37,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidDateException.class)
     public ResponseEntity<ErrorResponse> handleInvalidDateException(InvalidDateException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(NotFoundApplicableLectures.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundApplicableLectures(NotFoundApplicableLectures ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(NotFoundApplicableLecturesException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundApplicableLectures(NotFoundApplicableLecturesException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundComletedRegistrationException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundComletedRegistrationException(NotFoundComletedRegistrationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex){
