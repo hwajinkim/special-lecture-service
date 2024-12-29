@@ -18,25 +18,31 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(LectureNotFoundException.class)
-    public ResponseEntity<ErrorResponse> LectureNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleLectureNotFoundException(UserNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AlreadyExsitsRegistrationException.class)
-    public ResponseEntity<ErrorResponse> AlreadyExsitsRegistrationException(AlreadyExsitsRegistrationException ex) {
+    public ResponseEntity<ErrorResponse> handleAlreadyExsitsRegistrationException(AlreadyExsitsRegistrationException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(OverCapacityException.class)
-    public ResponseEntity<ErrorResponse> OverCapacityException(OverCapacityException ex) {
+    public ResponseEntity<ErrorResponse> handleOverCapacityException(OverCapacityException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidDateException.class)
     public ResponseEntity<ErrorResponse> handleInvalidDateException(InvalidDateException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundApplicableLectures.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundApplicableLectures(NotFoundApplicableLectures ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
