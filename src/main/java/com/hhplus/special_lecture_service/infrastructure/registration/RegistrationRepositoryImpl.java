@@ -5,6 +5,7 @@ import com.hhplus.special_lecture_service.domain.registration.RegistrationReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -27,4 +28,11 @@ public class RegistrationRepositoryImpl implements RegistrationRepository {
     public Registration save(Registration registration) {
         return registrationJpaRepository.save(registration);
     }
+
+    @Override
+    public List<Registration> findCompletedRegistration(Long userId) {
+        return registrationJpaRepository.findCompletedRegistration(userId);
+    }
+
+
 }

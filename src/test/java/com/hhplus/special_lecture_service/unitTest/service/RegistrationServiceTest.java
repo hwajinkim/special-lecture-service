@@ -1,6 +1,7 @@
 package com.hhplus.special_lecture_service.unitTest.service;
 
 import com.hhplus.special_lecture_service.common.exception.AlreadyExsitsRegistrationException;
+import com.hhplus.special_lecture_service.common.exception.NotFoundComletedRegistrationException;
 import com.hhplus.special_lecture_service.domain.common.StatusType;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.registration.Registration;
@@ -98,5 +99,53 @@ public class RegistrationServiceTest {
         verify(registrationRepository).exsitsByUserIdAndLectureId(user.getId(), lecture.getId());
         verify(registrationRepository).countCompletedRegistrationByLectureId(lecture.getId());
         verify(registrationRepository).save(any(Registration.class));
+    }
+
+    @Test
+    @DisplayName("특강 신청 완료 목록 조회 시, 특강이 존재하지 않아 NotFoundComletedRegistrationException 발생")
+    void testCompletedRegistration_NotFoundFail(){
+        //given
+        Long userId = 1L;
+        when(registrationRepository.findCompletedRegistration(userId)).thenReturn(null);
+        //when & then
+        Exception exception = assertThrows(NotFoundComletedRegistrationException.class,
+                ()-> registrationService.completedRegistration(userId));
+
+        assertEquals("신청 완료된 특강 신청을 찾을 수 없습니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("특강 신ㅊ어 완료 목록 조회 시 성공")
+    void testCompletedRegistration_Success(){
+        //given
+        Long userId = 1L;
+
+        List<Registration> mockRegistrations = List.of(
+                Registration.builder()
+                        .id(1L)
+                        .lectureName("스프링 강좌")
+                        .speaker("강민수")
+                        .lectureDate(LocalDate.of(2024,12,25))
+                        .startTime(LocalTime.of(10,00,00))
+                        .endTime(LocalTime.of(12,00,00))
+                        .status(StatusType.COMPLETED)
+                        .build(),
+                Registration.builder()
+                        .id(1L)
+                        .lectureName("운영체제")
+                        .speaker("김철수")
+                        .lectureDate(LocalDate.of(2024,12,25))
+                        .startTime(LocalTime.of(13,00,00))
+                        .endTime(LocalTime.of(15,00,00))
+                        .status(StatusType.COMPLETED)
+                        .build()
+                );
+        when(registrationRepository.findCompletedRegistration(userId)).thenReturn(mockRegistrations);
+        //when
+        List<Registration> registrations = registrationService.completedRegistration(userId);
+
+        //then
+        assertNotNull(registrations);
+        assertEquals(registrations, mockRegistrations);
     }
 }

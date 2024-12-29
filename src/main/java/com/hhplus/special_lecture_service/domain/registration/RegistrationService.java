@@ -1,6 +1,7 @@
 package com.hhplus.special_lecture_service.domain.registration;
 
 import com.hhplus.special_lecture_service.common.exception.AlreadyExsitsRegistrationException;
+import com.hhplus.special_lecture_service.common.exception.NotFoundComletedRegistrationException;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +37,14 @@ public class RegistrationService {
         //registration.registCount() : lectureId 전달, 조건은 state가 'COMPLETED'(신청완료)인 것 갯수 구하기
         int completedCount = registrationRepository.countCompletedRegistrationByLectureId(lectureId);
         return completedCount;
+    }
+
+    public List<Registration> completedRegistration(Long userId) {
+        //registration 테이블에 사용자ID가 userId이고, status값이 'COMPLETED'인 데이터 조회
+        List<Registration> registrations = registrationRepository.findCompletedRegistration(userId);
+        if(registrations == null || registrations.isEmpty()){
+            throw new NotFoundComletedRegistrationException("신청 완료된 특강 신청을 찾을 수 없습니다.");
+        }
+        return registrations;
     }
 }
