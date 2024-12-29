@@ -18,7 +18,7 @@ public class LectureResponse {
     private Long lectureId;
     private String lectureName;
     private String speaker;
-    private LocalDate date;
+    private LocalDate lectureDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private int applicantNumber;

@@ -1,7 +1,7 @@
 package com.hhplus.special_lecture_service.unitTest.service;
 
 import com.hhplus.special_lecture_service.common.exception.LectureNotFoundException;
-import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLectures;
+import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLecturesException;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.lecture.LectureRepository;
 import com.hhplus.special_lecture_service.domain.lecture.LectureService;
@@ -115,7 +115,7 @@ public class LectureServiceTest {
         when(lectureRepository.findApplicableLectures(date)).thenReturn(null);
 
         //when
-        assertThrows(NotFoundApplicableLectures.class,
+        assertThrows(NotFoundApplicableLecturesException.class,
                 ()-> lectureService.applicableLectures(date));
 
         verify(lectureRepository).findApplicableLectures(date);
@@ -143,15 +143,15 @@ public class LectureServiceTest {
                         .lectureName("운영체제")
                         .speaker("김철수")
                         .lectureDate(LocalDate.of(2024,12,25))
-                        .startTime(LocalTime.of(10,00,00))
-                        .endTime(LocalTime.of(12,00,00))
-                        .applicantNumber(20)
+                        .startTime(LocalTime.of(13,00,00))
+                        .endTime(LocalTime.of(15,00,00))
+                        .applicantNumber(25)
                         .isAvailable('Y')
                         .build()
         );
         when(lectureRepository.findApplicableLectures(date)).thenReturn(mockLectures);
 
-        //given
+        //when
         List<Lecture> lectures = lectureService.applicableLectures(date);
 
         //then

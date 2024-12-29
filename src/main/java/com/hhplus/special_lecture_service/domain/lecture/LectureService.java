@@ -1,7 +1,7 @@
 package com.hhplus.special_lecture_service.domain.lecture;
 
 import com.hhplus.special_lecture_service.common.exception.LectureNotFoundException;
-import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLectures;
+import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLecturesException;
 import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class LectureService {
     public List<Lecture> applicableLectures(String date) {
         List<Lecture> lectures =  lectureRepository.findApplicableLectures(date);
         if(lectures == null || lectures.isEmpty()){
-            throw new NotFoundApplicableLectures("해당 날짜에 신청 가능한 강의가 없습니다.");
+            throw new NotFoundApplicableLecturesException("해당 날짜에 신청 가능한 강의가 없습니다.");
         }
         return lectures;
     }

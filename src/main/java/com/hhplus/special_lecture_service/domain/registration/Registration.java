@@ -31,11 +31,11 @@ public class Registration {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name="userId", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="lectureId")
+    @JoinColumn(name="lectureId", nullable = false)
     private Lecture lecture;
 
     @Column

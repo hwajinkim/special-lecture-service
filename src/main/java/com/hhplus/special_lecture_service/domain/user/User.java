@@ -25,14 +25,14 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Registration> registrationList;
 
-    public User(long userId){
+    public User(Long userId){
         if(!isValidId(userId)){
             throw new IllegalArgumentException("사용자 ID 유효하지 않음.");
         }
         this.id = userId;
     }
 
-    public User(long userId, String username) {
+    public User(Long userId, String username) {
         this.id = userId;
         this.username = username;
     }
