@@ -55,4 +55,26 @@ public class UserServiceTest {
         assertThat(user.getId()).isEqualTo(userId);
         assertThat(user.getUsername()).isEqualTo(username);
     }
+
+    @Test
+    @DisplayName("신청 완료 목록 조회 시, userId가 Null로 들어왔을때 IllegalArgumentException 발생")
+    void testValidUserId_InputNull(){
+        //given
+        Long userId = null;
+        //when & then
+        assertThatThrownBy(()-> userService.validUserId(userId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("사용자 ID 유효하지 않음.");
+    }
+
+    @Test
+    @DisplayName("신청 완료 목록 조회 시, userId가 0으로 들어왔을때 IllegalArgumentException 발생")
+    void testValidUserId_InputZero(){
+        //given
+        Long userId = 0L;
+        //when & then
+        assertThatThrownBy(()-> userService.validUserId(userId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("사용자 ID 유효하지 않음.");
+    }
 }

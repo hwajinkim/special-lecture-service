@@ -17,4 +17,9 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("사용자 찾을 수 없음."));
         return user;
     }
+
+    public User validUserId(Long userId) {
+        User user = new User(userId);
+        return user;
+    }
 }
