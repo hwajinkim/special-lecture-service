@@ -30,12 +30,12 @@ public class Registration {
     @Column(name="registration_id", unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="userId", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="userId", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="lectureId", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="lectureId", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Lecture lecture;
 
     @Column
