@@ -1,21 +1,13 @@
 package com.hhplus.special_lecture_service.domain.lecture;
 
 import com.hhplus.special_lecture_service.common.exception.InvalidDateException;
-import com.hhplus.special_lecture_service.common.exception.LectureNotFoundException;
-import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
 import com.hhplus.special_lecture_service.domain.common.BaseEntity;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 //@Builder

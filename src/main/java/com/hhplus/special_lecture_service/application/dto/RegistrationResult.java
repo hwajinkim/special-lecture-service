@@ -1,18 +1,15 @@
 package com.hhplus.special_lecture_service.application.dto;
 
 import com.hhplus.special_lecture_service.domain.common.StatusType;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
 import com.hhplus.special_lecture_service.interfaces.api.dto.RegistrationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor

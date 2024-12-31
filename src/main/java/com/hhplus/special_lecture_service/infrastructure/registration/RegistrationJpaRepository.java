@@ -1,13 +1,12 @@
 package com.hhplus.special_lecture_service.infrastructure.registration;
 
-import com.hhplus.special_lecture_service.domain.registration.Registration;
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface RegistrationJpaRepository extends JpaRepository<Registration, Long> {

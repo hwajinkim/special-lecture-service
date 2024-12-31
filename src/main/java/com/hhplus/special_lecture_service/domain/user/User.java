@@ -1,7 +1,7 @@
 package com.hhplus.special_lecture_service.domain.user;
 
 import com.hhplus.special_lecture_service.domain.common.BaseEntity;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,8 @@
-package com.hhplus.special_lecture_service.domain.registration;
+package com.hhplus.special_lecture_service.domain.lecture;
+
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RegistrationRepository {
     boolean exsitsByUserIdAndLectureId(long userId, long lectuerId);

@@ -1,12 +1,11 @@
 package com.hhplus.special_lecture_service.infrastructure.registration;
 
-import com.hhplus.special_lecture_service.domain.registration.Registration;
-import com.hhplus.special_lecture_service.domain.registration.RegistrationRepository;
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
+import com.hhplus.special_lecture_service.domain.lecture.RegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

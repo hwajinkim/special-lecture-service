@@ -1,11 +1,12 @@
 package com.hhplus.special_lecture_service.unitTest.service;
 
+import com.hhplus.special_lecture_service.common.exception.AlreadyExsitsRegistrationException;
 import com.hhplus.special_lecture_service.common.exception.LectureNotFoundException;
 import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLecturesException;
-import com.hhplus.special_lecture_service.domain.lecture.Lecture;
-import com.hhplus.special_lecture_service.domain.lecture.LectureRepository;
-import com.hhplus.special_lecture_service.domain.lecture.LectureService;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
+import com.hhplus.special_lecture_service.common.exception.NotFoundComletedRegistrationException;
+import com.hhplus.special_lecture_service.domain.common.StatusType;
+import com.hhplus.special_lecture_service.domain.lecture.*;
+import com.hhplus.special_lecture_service.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Time;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,8 +30,14 @@ public class LectureServiceTest {
     @Mock
     private LectureRepository lectureRepository;
 
+    @Mock
+    private RegistrationRepository registrationRepository;
+
     @InjectMocks
     private LectureService lectureService;
+
+    @Mock
+    private User user;
 
     @Mock
     private Lecture mockLecture;
@@ -39,6 +45,10 @@ public class LectureServiceTest {
     @BeforeEach
     void setUp(){
         List<Registration> registrationList = new ArrayList<>();
+        user = User.builder()
+                .id(1L)
+                .username("김화진")
+                .build();
         mockLecture = Lecture.builder()
                 .id(1L)
                 .lectureName("운영체제")
@@ -52,27 +62,95 @@ public class LectureServiceTest {
     }
 
     @Test
-    @DisplayName("특강 id로 조회 실패테스트 - 특강 존재 안함.")
-    void testGetLectureById_LectureNotExist(){
+    @DisplayName("특강 신청하기 실패 테스트 - 이미 신청된 특강")
+    void testLectureRegist_AlreadyExists(){
         //given
-        long lectureId = 999L;
-        when(lectureRepository.findById(lectureId)).thenReturn(Optional.empty());
-
+        Long lectureId = 1L;
+        when(lectureRepository.findById(lectureId)).thenReturn(Optional.of(mockLecture));
+        when(registrationRepository.exsitsByUserIdAndLectureId(user.getId(), lectureId)).thenReturn(true);
         //when & then
-        assertThrows(LectureNotFoundException.class,
-                ()-> lectureService.getLectureById(lectureId));
+        Exception exception = assertThrows(AlreadyExsitsRegistrationException.class,
+                ()-> lectureService.lectureRegist(user, lectureId));
+
+        assertEquals("이미 신청된 특강입니다.", exception.getMessage());
     }
+
     @Test
-    @DisplayName("특강 id로 조회 테스트 - 특강 존재")
-    void testGetLectureById_LectureExist(){
+    @DisplayName("특강 신청하기 테스트 - 저장 성공")
+    void testLectureRegist_SavedSuccess(){
         //given
-        long lectureId = 1;
+        Long lectureId = 1L;
+
+        Registration mockRegistration = Registration.builder()
+                .id(1L)
+                .lectureName("운영체제")
+                .speaker("김철수")
+                .lectureDate(LocalDate.of(2024,12,25))
+                .startTime(LocalTime.of(10,00,00))
+                .endTime(LocalTime.of(12,00,00))
+                .status(StatusType.COMPLETED)
+                .build();
 
         when(lectureRepository.findById(lectureId)).thenReturn(Optional.of(mockLecture));
+        when(registrationRepository.exsitsByUserIdAndLectureId(user.getId(), lectureId)).thenReturn(false);
+        when(registrationRepository.countCompletedRegistrationByLectureId(lectureId)).thenReturn(5);
+        when(registrationRepository.save(any(Registration.class))).thenReturn(mockRegistration);
+
         //when
-        Lecture lecture = lectureService.getLectureById(lectureId);
+        Registration registration = lectureService.lectureRegist(user, lectureId);
         //then
-        assertEquals(lecture, mockLecture);
+        assertNotNull(registration);
+        verify(registrationRepository).exsitsByUserIdAndLectureId(user.getId(), mockLecture.getId());
+        verify(registrationRepository).countCompletedRegistrationByLectureId(mockLecture.getId());
+        verify(registrationRepository).save(any(Registration.class));
+    }
+
+    @Test
+    @DisplayName("특강 신청 완료 목록 조회 시, 특강이 존재하지 않아 NotFoundComletedRegistrationException 발생")
+    void testCompletedRegistration_NotFoundFail(){
+        //given
+        Long userId = 1L;
+        when(registrationRepository.findCompletedRegistration(userId)).thenReturn(null);
+        //when & then
+        Exception exception = assertThrows(NotFoundComletedRegistrationException.class,
+                ()-> lectureService.completedRegistration(userId));
+
+        assertEquals("신청 완료된 특강 신청을 찾을 수 없습니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("특강 신청 완료 목록 조회 시 성공")
+    void testCompletedRegistration_Success(){
+        //given
+        Long userId = 1L;
+
+        List<Registration> mockRegistrations = List.of(
+                Registration.builder()
+                        .id(1L)
+                        .lectureName("스프링 강좌")
+                        .speaker("강민수")
+                        .lectureDate(LocalDate.of(2024,12,25))
+                        .startTime(LocalTime.of(10,00,00))
+                        .endTime(LocalTime.of(12,00,00))
+                        .status(StatusType.COMPLETED)
+                        .build(),
+                Registration.builder()
+                        .id(1L)
+                        .lectureName("운영체제")
+                        .speaker("김철수")
+                        .lectureDate(LocalDate.of(2024,12,25))
+                        .startTime(LocalTime.of(13,00,00))
+                        .endTime(LocalTime.of(15,00,00))
+                        .status(StatusType.COMPLETED)
+                        .build()
+        );
+        when(registrationRepository.findCompletedRegistration(userId)).thenReturn(mockRegistrations);
+        //when
+        List<Registration> registrations = lectureService.completedRegistration(userId);
+
+        //then
+        assertNotNull(registrations);
+        assertEquals(registrations, mockRegistrations);
     }
 
     @Test

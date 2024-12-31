@@ -4,11 +4,8 @@ import com.hhplus.special_lecture_service.application.dto.*;
 import com.hhplus.special_lecture_service.application.lecture.LectureFacade;
 import com.hhplus.special_lecture_service.common.response.ApiResponse;
 import com.hhplus.special_lecture_service.common.response.ResponseCode;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
 import com.hhplus.special_lecture_service.interfaces.api.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

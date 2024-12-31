@@ -1,9 +1,7 @@
-package com.hhplus.special_lecture_service.domain.registration;
+package com.hhplus.special_lecture_service.domain.lecture;
 
 import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
-import com.hhplus.special_lecture_service.domain.common.BaseEntity;
 import com.hhplus.special_lecture_service.domain.common.StatusType;
-import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,12 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

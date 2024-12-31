@@ -2,7 +2,7 @@ package com.hhplus.special_lecture_service.integrationTest;
 
 import com.hhplus.special_lecture_service.domain.common.StatusType;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
 import com.hhplus.special_lecture_service.domain.user.User;
 import com.hhplus.special_lecture_service.integrationTest.setUp.LectureSetUp;
 import com.hhplus.special_lecture_service.integrationTest.setUp.RegistrationSetUp;
@@ -10,20 +10,16 @@ import com.hhplus.special_lecture_service.integrationTest.setUp.UserSetUp;
 import com.hhplus.special_lecture_service.interfaces.api.dto.LectureRequest;
 import com.hhplus.special_lecture_service.interfaces.api.dto.RegistrationRequest;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.Date;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+@Transactional
 public class LectureControllerTest extends BaseIntegrationTest{
 
     @Autowired
@@ -43,16 +39,21 @@ public class LectureControllerTest extends BaseIntegrationTest{
     @Autowired
     private RegistrationSetUp registrationSetUp;
 
+    private User user;
 
+    private Lecture lecture;
+    @BeforeEach
+    public void setUp() {
+        // 필요한 테스트 데이터를 생성
+        user = userSetUp.saveUser("kimhwajin");
+        lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
+                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
+
+    }
     @Test
     @DisplayName("특강 신청 테스트")
     public void lectureApplyTest() throws Exception {
         //given
-        User user = userSetUp.saveUser("kimhwajin");
-
-        Lecture lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
-                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
-
         RegistrationRequest registrationRequest = new RegistrationRequest();
         registrationRequest.setUserId(user.getId());
         registrationRequest.setLectureId(lecture.getId());
@@ -79,9 +80,6 @@ public class LectureControllerTest extends BaseIntegrationTest{
         //given
         String getDate = "2024-12-25";
 
-        Lecture lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
-                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
-
         LectureRequest lectureRequest = new LectureRequest();
         lectureRequest.setDate(getDate);
 
@@ -105,11 +103,6 @@ public class LectureControllerTest extends BaseIntegrationTest{
         //given
         Long userId = 1L;
 
-        User user = userSetUp.saveUser("kimhwajin");
-
-        Lecture lecture = lectureSetUp.saveLecture("스프링 강좌", "홍길동", LocalDate.of(2024,12,25),
-                LocalTime.of(10,00,00), LocalTime.of(12,00,00),10, 'Y');
-
         Registration registration = registrationSetUp.saveRegistration(user, lecture, "스프링 강좌", "홍길동",
                 LocalDate.of(2024,12,25), LocalTime.of(10,00,00), LocalTime.of(12,00,00)
                 , StatusType.COMPLETED);
@@ -119,11 +112,10 @@ public class LectureControllerTest extends BaseIntegrationTest{
                 , StatusType.COMPLETED);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api//lectures/completed")
+        ResultActions resultActions = mvc.perform(get("/api/lectures/completed")
                             .param("userId", String.valueOf(userId))
                             .accept(MediaType.APPLICATION_JSON))
                             .andDo(print());
-
         //then
         resultActions
                 .andExpect(status().isOk())

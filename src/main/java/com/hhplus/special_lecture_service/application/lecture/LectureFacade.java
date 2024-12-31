@@ -2,18 +2,14 @@ package com.hhplus.special_lecture_service.application.lecture;
 
 import com.hhplus.special_lecture_service.application.dto.*;
 import com.hhplus.special_lecture_service.common.exception.NotFoundApplicableLecturesException;
-import com.hhplus.special_lecture_service.common.exception.OverCapacityException;
 import com.hhplus.special_lecture_service.domain.lecture.Lecture;
 import com.hhplus.special_lecture_service.domain.lecture.LectureService;
-import com.hhplus.special_lecture_service.domain.registration.Registration;
-import com.hhplus.special_lecture_service.domain.registration.RegistrationService;
+import com.hhplus.special_lecture_service.domain.lecture.Registration;
 import com.hhplus.special_lecture_service.domain.user.User;
 import com.hhplus.special_lecture_service.domain.user.UserService;
-import com.hhplus.special_lecture_service.interfaces.api.dto.LectureRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +18,6 @@ import java.util.stream.Collectors;
 public class LectureFacade {
     private final UserService userService;
     private final LectureService lectureService;
-    private final RegistrationService registrationService;
-
     // 1. 특강 신청하기
     public RegistrationResult lectureRegist(RegistrationParam registrationParam){
 
@@ -31,16 +25,14 @@ public class LectureFacade {
         long lectureId = registrationParam.getLectureId();
         //1. user 도메인 : 사용자 id로 사용자 있는지 체크
         User user = userService.getUserById(userId);
-        //2. lecture 도메인 : 특강 id로 특강 있는지 체크
-        Lecture lecture = lectureService.getLectureById(lectureId);
 
         //3. registration 도메인 : 특강 신청 하기
-        Registration registration = registrationService.lectureRegist(user, lecture);
+        Registration registration = lectureService.lectureRegist(user, lectureId);
         //4. registration 도메인 : 상태가 'COMPLETED'인 특강 신청 갯수 가져오기,
-        int completedCount = registrationService.countCompletedRegistration(lecture.getId());
+        int completedCount = lectureService.countCompletedRegistration(lectureId);
 
         //5. lecture 도메인 : 특강 신청 후 정보 업데이트
-        lectureService.updateAfterLectureRegist(lecture.getId(), completedCount);
+        lectureService.updateAfterLectureRegist(lectureId, completedCount);
 
         return RegistrationResult.toServiceDto(registration);
     }
@@ -64,7 +56,7 @@ public class LectureFacade {
         //1. 사용자 ID 유효성 검증
         User user = userService.validUserId(userId);
         //2. registration 테이블에 사용자ID가 userId이고, status값이 'COMPLETED'인 데이터 조회
-        List<Registration> registrations = registrationService.completedRegistration(userId);
+        List<Registration> registrations = lectureService.completedRegistration(userId);
         return registrations.stream()
                 .map(RegistrationResult :: toServiceDto)
                 .collect(Collectors.toList());
