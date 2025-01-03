@@ -17,20 +17,23 @@ public class LectureService {
 
 
     @Transactional
-    public Registration lectureRegist(User user, Long lectureId){
+    public Registration lectureRegist(Long userId, Long lectureId){
         //0. 특강 id로 특강 있는지 체크
-        Lecture lecture = lectureRepository.findById(lectureId)
+        Lecture lecture = lectureRepository.findByIdWithPessimisticLock(lectureId)
                 .orElseThrow(()-> new LectureNotFoundException("특강을 찾을 수 없음."));
 
+
         //1. Registration 테이블에 userId, lectureId로 데이터 있는지 조회, 있으면 throws
-        if(registrationRepository.exsitsByUserIdAndLectureId(user.getId(), lecture.getId())){
+        if(registrationRepository.exsitsByUserIdAndLectureId(userId, lectureId)){
             throw new AlreadyExsitsRegistrationException("이미 신청된 특강입니다.");
         }
+
         //2. lectureId 전달, 조건은 state가 completed(신청완료)인 것 갯수 구하기
         int completedCount = registrationRepository.countCompletedRegistrationByLectureId(lecture.getId());
 
         //3. 특강 신청 호출
-        Registration registration = Registration.regist(user, lecture, completedCount);
+        Registration registration = Registration.regist(userId, lecture, completedCount);
+
         //4. 특강 신청 저장
         Registration savedRegistration = registrationRepository.save(registration);
 
@@ -55,7 +58,7 @@ public class LectureService {
     @Transactional
     public void updateAfterLectureRegist(Long lectureId, int completedCount) {
 
-        Lecture lecture =  lectureRepository.findById(lectureId)
+        Lecture lecture =  lectureRepository.findByIdWithPessimisticLock(lectureId)
                 .orElseThrow(() -> new LectureNotFoundException("특강을 찾을 수 없음."));
 
         // 특강 정보 업데이트
