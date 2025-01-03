@@ -44,7 +44,6 @@ public class LectureServiceTest {
 
     @BeforeEach
     void setUp(){
-        List<Registration> registrationList = new ArrayList<>();
         user = User.builder()
                 .id(1L)
                 .username("김화진")
@@ -57,7 +56,6 @@ public class LectureServiceTest {
                 .startTime(LocalTime.of(10,00,00))
                 .endTime(LocalTime.of(12,00,00))
                 .applicantNumber(20)
-                .registrationList(registrationList)
                 .build();
     }
 
@@ -66,11 +64,11 @@ public class LectureServiceTest {
     void testLectureRegist_AlreadyExists(){
         //given
         Long lectureId = 1L;
-        when(lectureRepository.findById(lectureId)).thenReturn(Optional.of(mockLecture));
+        when(lectureRepository.findByIdWithPessimisticLock(lectureId)).thenReturn(Optional.of(mockLecture));
         when(registrationRepository.exsitsByUserIdAndLectureId(user.getId(), lectureId)).thenReturn(true);
         //when & then
         Exception exception = assertThrows(AlreadyExsitsRegistrationException.class,
-                ()-> lectureService.lectureRegist(user, lectureId));
+                ()-> lectureService.lectureRegist(user.getId(), lectureId));
 
         assertEquals("이미 신청된 특강입니다.", exception.getMessage());
     }
@@ -91,13 +89,13 @@ public class LectureServiceTest {
                 .status(StatusType.COMPLETED)
                 .build();
 
-        when(lectureRepository.findById(lectureId)).thenReturn(Optional.of(mockLecture));
+        when(lectureRepository.findByIdWithPessimisticLock(lectureId)).thenReturn(Optional.of(mockLecture));
         when(registrationRepository.exsitsByUserIdAndLectureId(user.getId(), lectureId)).thenReturn(false);
-        when(registrationRepository.countCompletedRegistrationByLectureId(lectureId)).thenReturn(5);
+        when(registrationRepository.countCompletedRegistrationByLectureId(lectureId)).thenReturn(4);
         when(registrationRepository.save(any(Registration.class))).thenReturn(mockRegistration);
 
         //when
-        Registration registration = lectureService.lectureRegist(user, lectureId);
+        Registration registration = lectureService.lectureRegist(user.getId(), lectureId);
         //then
         assertNotNull(registration);
         verify(registrationRepository).exsitsByUserIdAndLectureId(user.getId(), mockLecture.getId());
@@ -160,7 +158,7 @@ public class LectureServiceTest {
         long lectureId = 999L;
         int completedCount = 25;
 
-        when(lectureRepository.findById(lectureId)).thenReturn(Optional.empty());
+        when(lectureRepository.findByIdWithPessimisticLock(lectureId)).thenReturn(Optional.empty());
 
         //when & then
         Exception exception = assertThrows(LectureNotFoundException.class,
@@ -176,12 +174,12 @@ public class LectureServiceTest {
         long lectureId = 1L;
         int completedCount = 25;
 
-        when(lectureRepository.findById(lectureId)).thenReturn(Optional.of(mockLecture));
+        when(lectureRepository.findByIdWithPessimisticLock(lectureId)).thenReturn(Optional.of(mockLecture));
         //when
         lectureService.updateAfterLectureRegist(lectureId, completedCount);
 
         //then
-        verify(lectureRepository).findById(lectureId);
+        verify(lectureRepository).findByIdWithPessimisticLock(lectureId);
         verify(lectureRepository).save(mockLecture);
     }
 

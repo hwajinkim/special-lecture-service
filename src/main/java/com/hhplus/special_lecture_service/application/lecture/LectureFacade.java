@@ -27,7 +27,7 @@ public class LectureFacade {
         User user = userService.getUserById(userId);
 
         //3. registration 도메인 : 특강 신청 하기
-        Registration registration = lectureService.lectureRegist(user, lectureId);
+        Registration registration = lectureService.lectureRegist(userId, lectureId);
         //4. registration 도메인 : 상태가 'COMPLETED'인 특강 신청 갯수 가져오기,
         int completedCount = lectureService.countCompletedRegistration(lectureId);
 

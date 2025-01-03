@@ -8,12 +8,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -25,13 +27,11 @@ public class Registration {
     @Column(name="registration_id", unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="userId", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
+    @Column(name="user_id", nullable = false)
+    private Long userId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="lectureId", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Lecture lecture;
+    @Column(name="lecture_id", nullable = false)
+    private Long lectureId;
 
     @Column
     private String lectureName;
@@ -55,10 +55,10 @@ public class Registration {
     private Timestamp appliedAt;
 
     @Builder
-    public Registration(Long id, User user, Lecture lecture, String lectureName, String speaker, LocalDate lectureDate, LocalTime startTime, LocalTime endTime, StatusType status){
+    public Registration(Long id, Long userId, Long lectureId, String lectureName, String speaker, LocalDate lectureDate, LocalTime startTime, LocalTime endTime, StatusType status){
         this.id = id;
-        this.user = user;
-        this.lecture = lecture;
+        this.userId = userId;
+        this.lectureId = lectureId;
         this.lectureName = lectureName;
         this.speaker = speaker;
         this.lectureDate = lectureDate;
@@ -67,19 +67,19 @@ public class Registration {
         this.status = status;
     }
 
-    public static Registration toSaveReturn(User user, Lecture lecture){
-        return new Registration(null, user, lecture, lecture.getLectureName(),
+    public static Registration toSaveReturn(Long userId, Lecture lecture){
+        return new Registration(null, userId, lecture.getId(), lecture.getLectureName(),
                 lecture.getSpeaker(), lecture.getLectureDate(), lecture.getStartTime(), lecture.getEndTime(),
                 StatusType.COMPLETED);
     }
 
-    public static Registration regist(User user, Lecture lecture, int completedCount) {
+    public static Registration regist(Long userId, Lecture lecture, int completedCount) {
         //3. registCount() ≥ 30, throws
         if(completedCount >= 30){
             throw new OverCapacityException("신청 가능 인원을 초과했습니다.");
         }
 
-        Registration registration = Registration.toSaveReturn(user, lecture);
+        Registration registration = Registration.toSaveReturn(userId, lecture);
         return registration;
     }
 

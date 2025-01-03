@@ -17,11 +17,11 @@ public class RegistrationSetUp {
     @Autowired
     private RegistrationJpaRepository registrationJpaRepository;
 
-    public Registration saveRegistration(User user, Lecture lecture, String lectureName, String speaker,
+    public Registration saveRegistration(Long userId, Long lectureId, String lectureName, String speaker,
                                  LocalDate lectureDate, LocalTime startTime, LocalTime endTime, StatusType status){
         Registration registration = Registration.builder()
-                        .user(user)
-                        .lecture(lecture)
+                        .userId(userId)
+                        .lectureId(lectureId)
                         .lectureName(lectureName)
                         .speaker(speaker)
                         .lectureDate(lectureDate)

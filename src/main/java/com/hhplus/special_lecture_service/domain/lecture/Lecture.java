@@ -43,9 +43,6 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     private char isAvailable;
 
-    @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER)
-    private List<Registration> registrationList;
-
     public Lecture(Long id){
         if(!isValidId(id)){
             throw new IllegalArgumentException("특강 ID 유효하지 않음.");
@@ -53,7 +50,7 @@ public class Lecture extends BaseEntity {
         this.id = id;
     }
    @Builder
-    public Lecture(Long id, String lectureName, String speaker, LocalDate lectureDate, LocalTime startTime, LocalTime endTime, int applicantNumber, char isAvailable, List<Registration> registrationList){
+    public Lecture(Long id, String lectureName, String speaker, LocalDate lectureDate, LocalTime startTime, LocalTime endTime, int applicantNumber, char isAvailable){
         this.id = id;
         this.lectureName = lectureName;
         this.speaker = speaker;
@@ -62,7 +59,6 @@ public class Lecture extends BaseEntity {
         this.endTime = endTime;
         this.applicantNumber = applicantNumber;
         this.isAvailable = isAvailable;
-        this.registrationList = registrationList;
     }
 
     public static boolean isValidId(Long id){

@@ -28,8 +28,8 @@ public class RegistrationResult {
 
     public static RegistrationResult toServiceDto(Registration registration) {
         return new RegistrationResult(
-                registration.getUser().getId(),
-                registration.getLecture().getId(),
+                registration.getUserId(),
+                registration.getLectureId(),
                 registration.getLectureName(),
                 registration.getSpeaker(),
                 registration.getLectureDate(),

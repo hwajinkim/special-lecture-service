@@ -1,7 +1,5 @@
 package com.hhplus.special_lecture_service.domain.lecture;
 
-import com.hhplus.special_lecture_service.domain.lecture.Registration;
-
 import java.util.List;
 
 public interface RegistrationRepository {

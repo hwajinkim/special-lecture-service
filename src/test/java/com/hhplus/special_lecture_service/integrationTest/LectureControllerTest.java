@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-@Transactional
 public class LectureControllerTest extends BaseIntegrationTest{
 
     @Autowired
@@ -103,11 +102,11 @@ public class LectureControllerTest extends BaseIntegrationTest{
         //given
         Long userId = 1L;
 
-        Registration registration = registrationSetUp.saveRegistration(user, lecture, "스프링 강좌", "홍길동",
+        Registration registration = registrationSetUp.saveRegistration(user.getId(), lecture.getId(), "스프링 강좌", "홍길동",
                 LocalDate.of(2024,12,25), LocalTime.of(10,00,00), LocalTime.of(12,00,00)
                 , StatusType.COMPLETED);
 
-        Registration registration2 = registrationSetUp.saveRegistration(user, lecture, "네트워크 개론", "김철수",
+        Registration registration2 = registrationSetUp.saveRegistration(user.getId(), lecture.getId(), "네트워크 개론", "김철수",
                 LocalDate.of(2024,12,25), LocalTime.of(14,00,00), LocalTime.of(16,00,00)
                 , StatusType.COMPLETED);
 

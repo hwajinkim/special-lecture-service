@@ -13,9 +13,9 @@ public interface RegistrationJpaRepository extends JpaRepository<Registration, L
 
     boolean existsByUserIdAndLectureId(long userId, long lectuerId);
 
-    @Query("SELECT COUNT(r) FROM Registration r WHERE r.lecture.id = :lectureId AND r.status = 'COMPLETED'")
+    @Query("SELECT COUNT(r) FROM Registration r WHERE r.lectureId = :lectureId AND r.status = 'COMPLETED'")
     int countCompletedRegistrationByLectureId(@Param("lectureId") Long lectureId);
 
-    @Query("SELECT r FROM Registration r WHERE r.user.id = :userId AND r.status = 'COMPLETED'")
+    @Query("SELECT r FROM Registration r WHERE r.userId = :userId AND r.status = 'COMPLETED'")
     List<Registration> findCompletedRegistration(@Param("userId") Long userId);
 }

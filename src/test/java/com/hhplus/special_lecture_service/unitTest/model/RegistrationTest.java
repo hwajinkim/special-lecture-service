@@ -22,7 +22,6 @@ public class RegistrationTest {
 
     @BeforeEach
     void setUp(){
-        List<Registration> registrationList = new ArrayList<>();
         user = User.builder()
                 .id(1L)
                 .username("김화진")
@@ -36,7 +35,6 @@ public class RegistrationTest {
                 .startTime(LocalTime.of(10,00,00))
                 .endTime(LocalTime.of(12,00,00))
                 .applicantNumber(20)
-                .registrationList(registrationList)
                 .build();
     }
 
@@ -46,7 +44,7 @@ public class RegistrationTest {
         //given
         int completedCount = 30;
         //when & then
-        assertThatThrownBy(()-> Registration.regist(user, lecture, completedCount))
+        assertThatThrownBy(()-> Registration.regist(user.getId(), lecture, completedCount))
                 .isInstanceOf(OverCapacityException.class)
                 .hasMessage("신청 가능 인원을 초과했습니다.");
     }
@@ -55,11 +53,11 @@ public class RegistrationTest {
     @DisplayName("특강 등록 테스트")
     void testRegist(){
         //given
-        Registration mockRegistration = Registration.toSaveReturn(user, lecture);
+        Registration mockRegistration = Registration.toSaveReturn(user.getId(), lecture);
         int completedCount = 20;
 
         //when
-        Registration registration = Registration.regist(user,lecture,completedCount);
+        Registration registration = Registration.regist(user.getId(),lecture,completedCount);
 
         //then
         assertThat(registration).usingRecursiveComparison().isEqualTo(mockRegistration);
